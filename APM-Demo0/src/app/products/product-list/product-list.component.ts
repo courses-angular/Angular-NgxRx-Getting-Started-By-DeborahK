@@ -1,9 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 
-import { Subscription } from 'rxjs';
+import {Subscription} from 'rxjs';
 
-import { Product } from '../product';
-import { ProductService } from '../product.service';
+import {Product} from '../product';
+import {ProductService} from '../product.service';
+import {select, Store} from '@ngrx/store';
+
+import * as fromProduct from '../state/product.reducer';
 
 @Component({
   selector: 'pm-product-list',
@@ -22,7 +25,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
   selectedProduct: Product | null;
   sub: Subscription;
 
-  constructor(private productService: ProductService) { }
+  constructor(private productService: ProductService, private store: Store<fromProduct.State>) {
+  }
 
   ngOnInit(): void {
     this.sub = this.productService.selectedProductChanges$.subscribe(
@@ -33,6 +37,16 @@ export class ProductListComponent implements OnInit, OnDestroy {
       next: (products: Product[]) => this.products = products,
       error: (err: any) => this.errorMessage = err.error
     });
+
+    // TODO: Unsubscribe this sub
+    // this.store.pipe(select('products')).subscribe(
+    //   state => this.displayCode = state.showProductCode
+    // );
+
+    //  Use custom selector from reducer
+    this.store.pipe(select(fromProduct.getShowProductCode)).subscribe(
+      code => this.displayCode = code
+    )
   }
 
   ngOnDestroy(): void {
@@ -40,7 +54,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   checkChanged(value: boolean): void {
-    this.displayCode = value;
+    // this.displayCode = value;
+    this.store.dispatch({
+      type: 'TOGGLE_PRODUCT_CODE',
+      payload: value
+    });
   }
 
   newProduct(): void {
