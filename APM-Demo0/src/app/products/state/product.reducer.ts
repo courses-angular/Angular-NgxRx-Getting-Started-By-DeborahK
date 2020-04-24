@@ -11,15 +11,18 @@ export interface State extends fromRoot.AppState {
 export interface ProductState {
   showProductCode: boolean;
   currentProduct: Product;
-  currentProductId: number,
+  currentProductId: number;
   products: Product[];
+  error: string;
+
 }
 
 const initialState: ProductState = {
   showProductCode: true,
   currentProduct: null,
   currentProductId: 3,
-  products: []
+  products: [],
+  error: ''
 };
 
 // Create selector for all Product state
@@ -30,10 +33,10 @@ export const getShowProductCode = createSelector(
   state => state.showProductCode
 );
 
-// export const getCurrentProduct = createSelector(
-//   getProductFeatureState,
-//   state => state.currentProduct
-// );
+export const getCurrentProduct = createSelector(
+  getProductFeatureState,
+  state => state.currentProduct
+);
 export const getCurrentProductId = createSelector(
   getProductFeatureState,
   state => state.currentProductId
@@ -44,13 +47,18 @@ export const getProducts = createSelector(
   state => state.products
 );
 // Composing selectors
-export const getCurrentProduct = createSelector(
+// export const getCurrentProduct = createSelector(
+//   getProductFeatureState,
+//   getCurrentProductId,
+//   (state, currentProductId) => {
+//     state.products.find(product => product.id === currentProductId);
+//   }
+// );
+
+export const getError = createSelector(
   getProductFeatureState,
-  getCurrentProductId,
-  (state, currentProductId) => {
-    state.products.find(product => product.id === currentProductId)
-  }
-);
+  state => state.error
+)
 
 // Create reducer
 export function reducer(state: ProductState = initialState, action: ProductActions): ProductState {
@@ -81,6 +89,18 @@ export function reducer(state: ProductState = initialState, action: ProductActio
           starRating: 0
         }
       };
+    case ProductActionTypes.LoadSuccess:
+      return {
+        ...state,
+        products: action.payload
+      };
+    case ProductActionTypes.LoadFail:
+      return {
+        ...state,
+        products: [],
+        error: action.payload
+      };
+
     default: {
       return state;
     }

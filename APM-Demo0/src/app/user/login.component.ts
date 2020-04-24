@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {Router, ActivatedRoute} from '@angular/router';
 
-import { AuthService } from './auth.service';
+import {AuthService} from './auth.service';
 import {select, Store} from '@ngrx/store';
 
 import * as fromUser from './state/user.reducer';
+import * as userActions from './state/user.action';
 
 @Component({
   templateUrl: './login.component.html',
@@ -24,7 +25,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.pipe(select(fromUser.getMaskUserName)).subscribe(maskUserName => {
-        this.maskUserName = maskUserName;
+      this.maskUserName = maskUserName;
     });
   }
 
@@ -34,10 +35,12 @@ export class LoginComponent implements OnInit {
 
   checkChanged(value: boolean): void {
     // this.maskUserName = value;
-    this.store.dispatch({
-      type: 'MASK_USER_NAME',
-      payload: value
-    });
+    // this.store.dispatch({
+    //   type: 'MASK_USER_NAME',
+    //   payload: value
+    // });
+
+    this.store.dispatch(new userActions.MaskUserName(value));
   }
 
   login(loginForm: NgForm): void {

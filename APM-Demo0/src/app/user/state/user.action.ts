@@ -1,14 +1,14 @@
-/* NgRx */
-import { Action } from '@ngrx/store';
+import {Action} from '@ngrx/store';
 
 export enum UserActionTypes {
-  MaskUserName = '[User] Mask User Name'
+  MaskUserName = '[User] Mask Username',
 }
 
 export class MaskUserName implements Action {
   readonly type = UserActionTypes.MaskUserName;
 
-  constructor(public payload: boolean) { }
+  constructor(public payload: boolean) {
+  }
 }
 
 export type UserActions = MaskUserName;
