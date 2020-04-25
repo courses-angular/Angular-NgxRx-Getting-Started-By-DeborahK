@@ -39,6 +39,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     //   selectedProduct => this.selectedProduct = selectedProduct
     // );
     // TODO: Unsubscribe
+    this.products$ = this.store.pipe(select(fromProduct.getProducts)) as Observable<Product[]>;
     this.store.pipe(select(fromProduct.getCurrentProduct)).subscribe(
       currentProduct => this.selectedProduct = currentProduct);
 
@@ -49,7 +50,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
     // });
     this.errorMessage$ = this.store.pipe(select(fromProduct.getError));
     this.store.dispatch(new productActions.Load());
-    this.products$ = this.store.pipe(select(fromProduct.getProducts));
       // takeWhile(() => this.componentActive))
       // .subscribe((products: Product[]) => this.products = products);
 
